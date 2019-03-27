@@ -1,5 +1,5 @@
 from pathlib import Path
-from nyuv2 import LabeledDataset
+from nyuv2 import *
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -39,4 +39,21 @@ def test_labeled_dataset():
 
     labeled.close()
 
+def test_raw_dataset():
+    # Pick the first raw dataset part we find
+    raw_archive_path = next(DATASET_DIR.glob('*.zip'))
+
+    raw_archive = RawDatasetArchive(raw_archive_path)
+    frame = raw_archive[5]
+    depth_path, color_path = Path('.') / frame[0], Path('.') / frame[1]
+
+    if not (depth_path.exists() and color_path.exists()):
+        depth_path, color_path = raw_archive.extract_frame(frame)
+
+    depth = load_depth_image(depth_path)
+    color = load_color_image(color_path)
+
+    plot_color_depth("Raw Dataset Sample", color, depth)
+
 test_labeled_dataset()
+test_raw_dataset()
