@@ -5,24 +5,26 @@ import matplotlib.pyplot as plt
 
 DATASET_DIR = Path('dataset')
 
-def plot_color(ax, color):
+def plot_color(ax, color, title="Color"):
     """Displays a color image from the NYU dataset."""
 
     ax.axis('off')
-    ax.set_title("Color")
+    ax.set_title(title)
     ax.imshow(color)
 
-def plot_depth(ax, depth):
+def plot_depth(ax, depth, title="Depth"):
     """Displays a depth map from the NYU dataset."""
 
     ax.axis('off')
-    ax.set_title("Depth")
+    ax.set_title(title)
     ax.imshow(depth, cmap='Spectral')
 
-def plot_color_depth(title, color, depth):
-    """Draws the color and depth maps of a scene, side-by-side."""
+def test_labeled_dataset():
+    labeled = LabeledDataset(DATASET_DIR / 'nyu_depth_v2_labeled.mat')
 
-    fig = plt.figure(title, figsize=(12, 5))
+    color, depth = labeled[42]
+
+    fig = plt.figure("Labeled Dataset Sample", figsize=(12, 5))
 
     ax = fig.add_subplot(1, 2, 1)
     plot_color(ax, color)
@@ -31,11 +33,6 @@ def plot_color_depth(title, color, depth):
     plot_depth(ax, depth)
 
     plt.show()
-
-def test_labeled_dataset():
-    labeled = LabeledDataset(DATASET_DIR / 'nyu_depth_v2_labeled.mat')
-
-    plot_color_depth("Labeled Dataset Sample", *labeled[42])
 
     labeled.close()
 
@@ -48,12 +45,21 @@ def test_raw_dataset():
     depth_path, color_path = Path('.') / frame[0], Path('.') / frame[1]
 
     if not (depth_path.exists() and color_path.exists()):
-        depth_path, color_path = raw_archive.extract_frame(frame)
+        raw_archive.extract_frame(frame)
 
-    depth = load_depth_image(depth_path)
     color = load_color_image(color_path)
+    depth = load_depth_image(depth_path)
 
-    plot_color_depth("Raw Dataset Sample", color, depth)
+    fig = plt.figure("Raw Dataset Sample", figsize=(12, 5))
+
+    before_proj_overlay = color_depth_overlay(color, depth, relative=True)
+
+    ax = fig.add_subplot(1, 2, 1)
+    plot_color(ax, before_proj_overlay, "Before Projection")
+
+    # TODO: project depth and RGB image
+
+    plt.show()
 
 test_labeled_dataset()
 test_raw_dataset()
