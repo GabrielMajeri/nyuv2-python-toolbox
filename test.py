@@ -8,7 +8,6 @@ DATASET_DIR = Path('dataset')
 def plot_color(ax, color):
     """Displays a color image from the NYU dataset."""
 
-    color = np.moveaxis(color, 0, -1)
     ax.axis('off')
     ax.set_title("Color")
     ax.imshow(color)

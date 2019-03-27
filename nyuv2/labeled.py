@@ -1,5 +1,9 @@
 import h5py
 import numpy as np
+from PIL import Image
+
+def rotate_image(image):
+    return image.rotate(-90, expand=True)
 
 class LabeledDataset:
     """Python interface for the labeled subset of the NYU dataset.
@@ -22,6 +26,13 @@ class LabeledDataset:
         return len(self.color_maps)
 
     def __getitem__(self, idx):
-        color_map = np.rot90(self.color_maps[idx], k=-1, axes=(1, 2))
-        depth_map = np.rot90(self.depth_maps[idx], k=-1)
-        return color_map, depth_map
+        color_map = self.color_maps[idx]
+        color_map = np.moveaxis(color_map, 0, -1)
+        color_image = Image.fromarray(color_map, mode='RGB')
+        color_image = rotate_image(color_image)
+
+        depth_map = self.depth_maps[idx]
+        depth_image = Image.fromarray(depth_map, mode='F')
+        depth_image = rotate_image(depth_image)
+
+        return color_image, depth_image
