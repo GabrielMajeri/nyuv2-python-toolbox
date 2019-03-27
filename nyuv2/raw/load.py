@@ -4,9 +4,7 @@ from PIL import Image
 def load_depth_image(path):
     """Loads an unprocessed depth map extracted from the raw dataset."""
     with open(path, 'rb') as f:
-        depth_map = read_pgm(f)
-        normalized = depth_map.astype(np.float32) / 65535
-        return Image.fromarray(normalized, mode='F')
+        return Image.fromarray(read_pgm(f), mode='I')
 
 def load_color_image(path):
     """Loads an unprocessed color image extracted from the raw dataset."""
@@ -28,9 +26,9 @@ def read_pgm(pgm_file):
 
     width, height = int(width), int(height)
 
-    data = np.fromfile(pgm_file, dtype='>u2', count=width*height)
+    data = np.fromfile(pgm_file, dtype='<u2', count=width*height)
 
-    return data.reshape(height, width)
+    return data.reshape(height, width).astype(np.uint32)
 
 def read_ppm(ppm_file):
     """Reads a PPM file from a buffer.
