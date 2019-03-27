@@ -1,0 +1,2 @@
+# Detect text files and store them with LF line endings
+* text=auto eol=lf
