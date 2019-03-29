@@ -15,6 +15,7 @@ This library contains code for:
 
 - Higher-level interface to the labeled subset
 - Raw dataset extraction and preprocessing
+- Performing data augmentation
 
 ## License
 
