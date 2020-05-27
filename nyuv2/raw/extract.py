@@ -85,6 +85,8 @@ def synchronise_frames(frame_names):
             if new_diff > diff:
                 break
 
+            diff = new_diff
+
             color_idx = color_idx + 1
 
         frames.append((depth_img_name, color_img_names[color_idx]))
