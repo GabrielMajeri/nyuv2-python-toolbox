@@ -14,7 +14,7 @@ class LabeledDataset:
 
     def __init__(self, path):
         """Opens the labeled dataset file at the given path."""
-        self.file = h5py.File(path)
+        self.file = h5py.File(path, mode='r')
         self.color_maps = self.file['images']
         self.depth_maps = self.file['depths']
 
